@@ -1,65 +1,74 @@
 require 'net/http'
 require 'uri'
 require 'json'
+require 'set'
 
-require_relative 'set'
+require_relative 'entity/player'
+require_relative 'entity/event_set'
 
 MTA_RELEASE_TIME = Time.utc(2018, 6, 22)
 API_TOKEN = ENV["SMASHGG_API_TOKEN"]
 SETS_PER_PAGE = 99
 
-def get_smashgg_event_sets(event_id)
-    sets = []
-    page = 1
-    total_sets = 2147483647
-
-    while (page - 1) * SETS_PER_PAGE < total_sets
-        response_map = JSON.parse(query_smashgg_event_sets(event_id, page, SETS_PER_PAGE))
-        sets.concat(transform_smashgg_event_sets(response_map))
-
-        total_sets = response_map["data"]["event"]["sets"]["pageInfo"]["total"]
-        page += 1
-    end
-
-    return sets
-end
-
-def query_smashgg_event_sets(event_id, page, sets_per_page)
-    smashgg_operation_name = "EventSets"
-    smashgg_query = "
-        query EventSets($eventId: ID!, $page:Int!, $perPage:Int!){
-          event(id:$eventId){
-            startAt
-            sets(
-              page: $page
-              perPage: $perPage
-              sortType: STANDARD
-            ){
-              pageInfo {
-                total
+EVENT_SET_OPERATION_NAME = "EventSets"
+EVENT_SET_QUERY = "
+    query EventSets($eventId: ID!, $page:Int!, $perPage:Int!){
+      event(id:$eventId){
+        startAt
+        sets(
+          page: $page
+          perPage: $perPage
+          sortType: STANDARD
+        ){
+          pageInfo {
+            total
+          }
+          nodes {
+            completedAt
+            slots {
+              standing {
+                placement
               }
-              nodes {
-                completedAt
-                slots {
-                  standing {
-                    placement
-                  }
-                  entrant {
-                    name
-                    participants {
-                      playerId
-                    }
-                  }
+              entrant {
+                name
+                participants {
+                  playerId
                 }
               }
             }
           }
         }
-    "
+      }
+    }
+"
+
+# Retrieve smash.gg sets and players from an event.
+def get_smashgg_event(event_id)
+    players = Set.new()
+    sets = []
+
+    page = 1
+    total_sets = 2147483647
+
+    while (page - 1) * SETS_PER_PAGE < total_sets
+        response_map = JSON.parse(query_smashgg_event(event_id, page))
+        new_players, new_sets = transform_smashgg_event(response_map)
+
+        players.merge(new_players)
+        sets.concat(new_sets)        
+
+        total_sets = response_map["data"]["event"]["sets"]["pageInfo"]["total"]
+        page += 1
+    end
+
+    return players, sets
+end
+
+def query_smashgg_event(event_id, page)
     smashgg_variables = {
         "eventId" => event_id,
         "page" => page,
-        "perPage" => sets_per_page
+        "perPage" => SETS_PER_PAGE
     }
 
     uri = URI("https://api.smash.gg/gql/alpha")
@@ -67,8 +76,8 @@ def query_smashgg_event_sets(event_id, page, sets_per_page)
     http.use_ssl = true
     request = Net::HTTP::Post.new(uri.request_uri)
     request.body = {
-        "operationName" => smashgg_operation_name,
-        "query" => smashgg_query,
+        "operationName" => EVENT_SET_OPERATION_NAME,
+        "query" => EVENT_SET_QUERY,
         "variables" => smashgg_variables     
     }.to_json
     request["Content-Type"] = "application/json"
@@ -76,11 +85,13 @@ def query_smashgg_event_sets(event_id, page, sets_per_page)
     return http.request(request).body
 end
 
-def transform_smashgg_event_sets(map)
+def transform_smashgg_event(map)
     event_start_time = Time.at(map["data"]["event"]["startAt"])
     event_day_number = (event_start_time - MTA_RELEASE_TIME).to_i / (24 * 60 * 60)
 
     smashgg_sets = map["data"]["event"]["sets"]["nodes"]
+
+    players = Set.new()
     sets = []
 
     smashgg_sets.each do |smashgg_set|
@@ -90,22 +101,25 @@ def transform_smashgg_event_sets(map)
             next
         end
 
-        # Create the set.
-        player1 = smashgg_set["slots"][0]
-        player2 = smashgg_set["slots"][1]
-
-        player1_id = player1["entrant"]["participants"][0]["playerId"]
-        player2_id = player2["entrant"]["participants"][0]["playerId"]
-        player1_name = player1["entrant"]["name"]
-        player2_name = player2["entrant"]["name"]
-        winner = if player1["standing"]["placement"] == 1 then
+        player1_slot = smashgg_set["slots"][0]
+        player2_slot = smashgg_set["slots"][1]
+        player1_id = player1_slot["entrant"]["participants"][0]["playerId"]
+        player2_id = player2_slot["entrant"]["participants"][0]["playerId"]
+        player1_name = player1_slot["entrant"]["name"]
+        player2_name = player2_slot["entrant"]["name"]
+        winner = if player1_slot["standing"]["placement"] == 1 then
             "B" # Player 1
         else
             "W" # Player 2
         end
 
-        sets.push(Set.new(player1_id, player2_id, player1_name, player2_name, event_day_number, winner))
+        # Create sets.
+        sets.push(EventSet.new(player1_id, player2_id, winner, event_day_number))
+
+        # Create players.
+        players.add(Player.new(player1_id, player1_name))
+        players.add(Player.new(player2_id, player2_name))
     end
 
-    return sets
+    return players, sets
 end
