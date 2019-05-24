@@ -1,141 +1,20 @@
-require 'net/http'
-require 'uri'
-require 'json'
 require 'whole_history_rating'
+
+# TODO: this smells like doodoo
+require_relative 'set'
+require_relative 'smashgg_client'
 
 # TODO: Clean up messy awful doodoo code. :Bill:
 # TODO: Remove games with DQs.
-MTA_RELEASE_TIME = Time.utc(2018, 6, 22)
-API_TOKEN = "roflmymao" # stick this somewhere else lolol
-SETS_PER_PAGE = 99 # Query complexity of 991
 
-class Set
-    def initialize(player1_id, player2_id, player1_name, player2_name, day_number, winner)
-        @player1_id = player1_id
-        @player2_id = player2_id
-        @player1_name = player1_name
-        @player2_name = player2_name
-        @day_number = day_number
-        @winner = winner # 1 or 2
-    end
-
-    attr_reader :player1_id, :player2_id, :player1_name, :player2_name, :day_number, :winner
-end
-
-def parse_smashgg_sets(map)
-    # Treat all sets as if they started on the same day.
-    event_start_time = Time.at(map["data"]["event"]["startAt"])
-    event_day_number = (event_start_time - MTA_RELEASE_TIME).to_i / (24 * 60 * 60)
-
-    smashgg_sets = map["data"]["event"]["sets"]["nodes"]
-    sets = []
-
-    smashgg_sets.each do |smashgg_set|
-
-        # Ensure there are two participants.
-        if smashgg_set["slots"].length != 2
-            next
-        end
-
-        # Create the set.
-        player1 = smashgg_set["slots"][0]
-        player2 = smashgg_set["slots"][1]
-
-        player1_id = player1["entrant"]["participants"][0]["playerId"]
-        player2_id = player2["entrant"]["participants"][0]["playerId"]
-        player1_name = player1["entrant"]["name"]
-        player2_name = player2["entrant"]["name"]
-        winner = if player1["standing"]["placement"] == 1 then
-            "B" # Player 1
-        else
-            "W" # Player 2
-        end
-
-        sets.push(Set.new(player1_id, player2_id, player1_name, player2_name, event_day_number, winner))
-    end
-
-    return sets
-end
-
-def get_sets_from_smashgg_event(event_id)
-    sets = []
-    page = 0
-    total_sets = 2147483647
-
-    while page * SETS_PER_PAGE < total_sets
-        smashgg_operation_name = "EventSets"
-        smashgg_query = "
-            query EventSets($eventId: ID!, $page:Int!, $perPage:Int!){
-              event(id:$eventId){
-                startAt
-                sets(
-                  page: $page
-                  perPage: $perPage
-                  sortType: STANDARD
-                ){
-                  pageInfo {
-                    total
-                  }
-                  nodes {
-                    completedAt
-                    slots {
-                      standing {
-                        placement
-                      }
-                      entrant {
-                        name
-                        participants {
-                          playerId
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-        "
-        smashgg_variables = {
-            "eventId" => event_id,
-            "page" => page + 1,
-            "perPage" => SETS_PER_PAGE
-        }
-
-        uri = URI("https://api.smash.gg/gql/alpha")
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true
-        request = Net::HTTP::Post.new(uri.request_uri)
-        request.body = {
-            "operationName" => smashgg_operation_name,
-            "query" => smashgg_query,
-            "variables" => smashgg_variables     
-        }.to_json
-        request["Content-Type"] = "application/json"
-        request["Authorization"] = "Bearer " + API_TOKEN
-        response = http.request(request)
-        
-        # Parse response and continue querying if not all sets have been processed.
-        response_map = JSON.parse(response.body)
-        sets.concat(parse_smashgg_sets(response_map))
-
-        total_sets = response_map["data"]["event"]["sets"]["pageInfo"]["total"]
-        page += 1
-    end
-
-    return sets
-end
-
-def get_sets_from_challonge_event(event_id)
-    # TODO: Implement.
-end
-
-# Some players may have multiple accounts. In this case, combine them.
-account_id_mapping = {
+# Some players have multiple accounts. In this case, combine them.
+ACCOUNT_ID_MAP = {
     419570 => 1030534, # Pelupelu
     1112712 => 733592, # ibuprofen
 }
 
 # TODO: Rate limit or store results locally so we don't need to refetch everything
-smashgg_event_ids = [
+SMASHGG_EVENT_IDS = [
 
     # Season 1: HEEHEE~
     218231, # PKHat's Weejapahlooza
@@ -173,19 +52,60 @@ smashgg_event_ids = [
     341744, # MariTeni: Bill (Standard Singles)
     341746, # MariTeni: Bill (Low Tier Standard)
     352416, # Mario Tennis Aces - Swiss!
+
 ]
 
-# TODO: Actually implement if we want to.
-challonge_event_ids = [
+# TODO: Actually implement if we want to, but we usually don't host on Challonge.
+CHALLONGE_EVENT_IDS = [
     # STT11
     # STT12
     # STT13
 ]
 
+def get_account_id_to_name_map(sets)
+    account_id_to_name_map = {}
+
+    sets.each do |set|
+        if !account_id_to_name_map.key?(set.player1_id)
+            account_id_to_name_map[set.player1_id] = set.player1_name
+        end
+
+        if !account_id_to_name_map.key?(set.player2_id)
+            account_id_to_name_map[set.player2_id] = set.player2_name
+        end
+    end
+
+    return account_id_to_name_map
+end
+
+def create_whr_games(whr, sets)
+    account_id_to_name_map = get_account_id_to_name_map(sets)
+
+    sets.each do |set|
+        player1_id = if ACCOUNT_ID_MAP.key?(set.player1_id)
+            ACCOUNT_ID_MAP[set.player1_id]
+        else
+            set.player1_id
+        end
+
+        player2_id = if ACCOUNT_ID_MAP.key?(set.player2_id)
+            ACCOUNT_ID_MAP[set.player2_id]
+        else
+            set.player2_id
+        end
+
+        whr.create_game(player1_id.to_s + ": " + account_id_to_name_map[player1_id],
+                        player2_id.to_s + ": " + account_id_to_name_map[player2_id],
+                        set.winner,
+                        set.day_number,
+                        0)
+    end
+end
+
 # Concatenate sets from all tournaments.
 sets = []
-smashgg_event_ids.each do |smashgg_event_id|
-    sets.concat(get_sets_from_smashgg_event(smashgg_event_id))
+SMASHGG_EVENT_IDS.each do |smashgg_event_id|
+    sets.concat(get_smashgg_event_sets(smashgg_event_id))
 end
 
 # Sort games by the day they have occurred.
@@ -194,43 +114,11 @@ sets.sort! { |a, b| a.day_number <=> b.day_number }
 # w2 is the variability of the ratings over time.
 # The default value of 300 is considered fairly high, but given the relatively few tournaments we have,
 # it may be necessary.
-@whr = WholeHistoryRating::Base.new
+whr = WholeHistoryRating::Base.new
 
-# Collect player names as player names may differ per tournament.
-player_names = {}
-sets.each do |set|
-    if !player_names.key?(set.player1_id)
-        player_names[set.player1_id] = set.player1_name
-    end
-
-    if !player_names.key?(set.player2_id)
-        player_names[set.player2_id] = set.player2_name
-    end
-end
-
-# Create WHR games.
-sets.each do |set|
-    player1_id = if account_id_mapping.key?(set.player1_id)
-        account_id_mapping[set.player1_id]
-    else
-        set.player1_id
-    end
-
-    player2_id = if account_id_mapping.key?(set.player2_id)
-        account_id_mapping[set.player2_id]
-    else
-        set.player2_id
-    end
-
-    @whr.create_game(player1_id.to_s + ": " + player_names[player1_id],
-                     player2_id.to_s + ": " + player_names[player2_id],
-                     set.winner,
-                     set.day_number,
-                     0)
-end
+create_whr_games(whr, sets)
 
 # Iterate the WHR algorithm towards convergence.
 # TODO: Implement a threshold to stop iterating.
-@whr.iterate(100)
-
-puts @whr.print_ordered_ratings()
+whr.iterate(100)
+whr.print_ordered_ratings()
