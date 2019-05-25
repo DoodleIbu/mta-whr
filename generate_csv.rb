@@ -5,7 +5,7 @@ def generate_player_csv(players)
 
     players.each do |player|
         player_file.write(
-            [player.id.to_s, player.name].join(",") + "\n"
+            [player.id, player.name].join(",") + "\n"
         )
     end
 
@@ -16,6 +16,15 @@ end
 # TODO: Generate
 def generate_rating_csv(whr)
     rating_file = File.new("rating.csv", "w+")
+
+    whr.players.values.each do |player|
+        player.days.each do |day|
+            rating_file.write(
+                [player.name, day.day, day.elo].join(",") + "\n"
+            )
+        end
+    end
+
     rating_file.close()
 end
 
@@ -25,7 +34,7 @@ def generate_set_csv(sets)
 
     sets.each do |set|
         sets_file.write(
-            [set.player1_id.to_s, set.player2_id.to_s, set.winner, set.day_number].join(",") + "\n"
+            [set.player1_id, set.player2_id, set.winner, set.day_number].join(",") + "\n"
         )
     end
 

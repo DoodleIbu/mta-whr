@@ -6,10 +6,8 @@ require_relative 'smashgg_client'
 require_relative 'generate_csv'
 
 # TODO: Clean up messy awful doodoo code. :Bill:
-# TODO: Remove games with DQs.
-
 # Some players have multiple accounts. In this case, combine them.
-ACCOUNT_ID_MAP = {
+PLAYER_ID_MAP = {
     419570 => 1030534, # Pelupelu
     1112712 => 733592, # ibuprofen
 }
@@ -56,29 +54,33 @@ SMASHGG_EVENT_IDS = [
 
 ]
 
-# TODO: Actually implement if we want to, but we usually don't host on Challonge.
+# TODO: Actually implement if we want to, but we usually don't use Challonge.
 CHALLONGE_EVENT_IDS = [
     # STT11
     # STT12
     # STT13
 ]
 
+def sort_by_date(sets)
+    sets.sort! { |a, b| a.day_number <=> b.day_number }
+end
+
+def correct_player_ids(sets)
+    sets.each do |set|
+        if PLAYER_ID_MAP.key?(set.player1_id)
+            set.player1_id = PLAYER_ID_MAP[set.player1_id]
+        end
+
+        if PLAYER_ID_MAP.key?(set.player2_id)
+            set.player2_id = PLAYER_ID_MAP[set.player2_id]
+        end
+    end
+end
+
 def create_whr_games(whr, sets)
     sets.each do |set|
-        player1_id = if ACCOUNT_ID_MAP.key?(set.player1_id)
-            ACCOUNT_ID_MAP[set.player1_id]
-        else
-            set.player1_id
-        end
-
-        player2_id = if ACCOUNT_ID_MAP.key?(set.player2_id)
-            ACCOUNT_ID_MAP[set.player2_id]
-        else
-            set.player2_id
-        end
-
-        whr.create_game(player1_id.to_s,
-                        player2_id.to_s,
+        whr.create_game(set.player1_id,
+                        set.player2_id,
                         set.winner,
                         set.day_number,
                         0)
@@ -95,17 +97,16 @@ SMASHGG_EVENT_IDS.each do |smashgg_event_id|
     sets.concat(event_sets)
 end
 
-# Sort games by the day they have occurred.
-sets.sort! { |a, b| a.day_number <=> b.day_number }
-
 # w2 is the variability of the ratings over time.
 # The default value of 300 is considered fairly high, but given the relatively few tournaments we have,
 # it may be necessary.
 whr = WholeHistoryRating::Base.new
+
+correct_player_ids(sets)
+sort_by_date(sets)
 create_whr_games(whr, sets)
 
 # Iterate the WHR algorithm towards convergence.
-# TODO: Implement a threshold to stop iterating.
 whr.iterate(100)
 whr.print_ordered_ratings()
 
@@ -113,4 +114,4 @@ whr.print_ordered_ratings()
 generate_player_csv(players)
 generate_rating_csv(whr)
 generate_set_csv(sets)
-puts "Generated CSV files. Commit them into kernelthree.github.io."
+puts "Generated CSV files. Commit them into kernelthree.github.io"

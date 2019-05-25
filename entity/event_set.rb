@@ -10,8 +10,8 @@ class EventSet
         else
             raise ArgumentError, "Winner is an invalid value %s and only accepts 'B' or 'W'." % winner
         end
-        
     end
 
-    attr_reader :player1_id, :player2_id, :winner, :day_number
+    attr_reader :winner, :day_number
+    attr_accessor :player1_id, :player2_id
 end

@@ -8,7 +8,7 @@ require_relative 'entity/event_set'
 
 MTA_RELEASE_TIME = Time.utc(2018, 6, 22)
 API_TOKEN = ENV["SMASHGG_API_TOKEN"]
-SETS_PER_PAGE = 99
+SETS_PER_PAGE = 50
 
 EVENT_SET_OPERATION_NAME = "EventSets"
 EVENT_SET_QUERY = "
@@ -28,6 +28,11 @@ EVENT_SET_QUERY = "
             slots {
               standing {
                 placement
+                stats {
+                    score {
+                      value
+                    }
+                }
               }
               entrant {
                 name
@@ -82,7 +87,9 @@ def query_smashgg_event(event_id, page)
     }.to_json
     request["Content-Type"] = "application/json"
     request["Authorization"] = "Bearer " + API_TOKEN
-    return http.request(request).body
+
+    response = http.request(request)
+    return response.body
 end
 
 def transform_smashgg_event(map)
@@ -103,6 +110,13 @@ def transform_smashgg_event(map)
 
         player1_slot = smashgg_set["slots"][0]
         player2_slot = smashgg_set["slots"][1]
+
+        # Ensure this set is not a DQ, i.e. the score of one of the participants is -1.
+        if player1_slot["standing"]["stats"]["score"]["value"] == -1 or
+           player2_slot["standing"]["stats"]["score"]["value"] == -1
+            next
+        end
+
         player1_id = player1_slot["entrant"]["participants"][0]["playerId"]
         player2_id = player2_slot["entrant"]["participants"][0]["playerId"]
         player1_name = player1_slot["entrant"]["name"]
