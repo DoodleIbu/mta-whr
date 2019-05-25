@@ -1,6 +1,7 @@
 class EventSet
 
-    def initialize(player1_id, player2_id, winner, day_number)
+    def initialize(event_id, player1_id, player2_id, winner, day_number)
+        @event_id = event_id
         @player1_id = player1_id
         @player2_id = player2_id
         @day_number = day_number
@@ -12,6 +13,6 @@ class EventSet
         end
     end
 
-    attr_reader :winner, :day_number
+    attr_reader :event_id, :winner, :day_number
     attr_accessor :player1_id, :player2_id
 end

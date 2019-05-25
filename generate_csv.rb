@@ -1,42 +1,50 @@
 # Used for hosting the page at kernelthree.github.io
-# Format (players): id, name
 def generate_player_csv(players)
-    player_file = File.new("player.csv", "w+")
+    file = File.new("players.csv", "w+")
+    lines = ["id,name"]
 
     players.each do |player|
-        player_file.write(
-            [player.id, player.name].join(",") + "\n"
-        )
+        lines.push([player.id, player.name].join(","))
     end
 
-    player_file.close()
+    file.write(lines.join("\n"))
+    file.close()
 end
 
-# Format (player rating): player_id, day, rating
-# TODO: Generate
+def generate_event_csv(events)
+    file = File.new("events.csv", "w+")
+    lines = ["id,name"]
+
+    events.each do |event|
+        lines.push([event.id, event.name].join(","))
+    end
+
+    file.write(lines.join("\n"))
+    file.close()
+end
+
+def generate_set_csv(sets)
+    file = File.new("sets.csv", "w+")
+    lines = ["event_id,player1_id,player2_id,winner,day"]
+
+    sets.each do |set|
+        lines.push([set.event_id, set.player1_id, set.player2_id, set.winner, set.day_number].join(","))
+    end
+
+    file.write(lines.join("\n"))
+    file.close()
+end
+
 def generate_rating_csv(whr)
-    rating_file = File.new("rating.csv", "w+")
+    file = File.new("ratings.csv", "w+")
+    lines = ["player_id,day,rating"]
 
     whr.players.values.each do |player|
         player.days.each do |day|
-            rating_file.write(
-                [player.name, day.day, day.elo].join(",") + "\n"
-            )
+            lines.push([player.name, day.day, day.elo].join(","))
         end
     end
 
-    rating_file.close()
-end
-
-# Format (sets): player1_id, player2_id, winner, day
-def generate_set_csv(sets)
-    sets_file = File.new("sets.csv", "w+")
-
-    sets.each do |set|
-        sets_file.write(
-            [set.player1_id, set.player2_id, set.winner, set.day_number].join(",") + "\n"
-        )
-    end
-
-    sets_file.close()
+    file.write(lines.join("\n"))
+    file.close()
 end

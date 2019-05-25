@@ -88,11 +88,13 @@ def create_whr_games(whr, sets)
 end
 
 # Concatenate players and sets from all tournaments.
+events = Set.new()
 players = Set.new()
 sets = []
 
 SMASHGG_EVENT_IDS.each do |smashgg_event_id|
-    event_players, event_sets = get_smashgg_event(smashgg_event_id)
+    event, event_players, event_sets = get_smashgg_event(smashgg_event_id)
+    events.add(event)
     players.merge(event_players)
     sets.concat(event_sets)
 end
@@ -112,6 +114,7 @@ whr.print_ordered_ratings()
 
 # Generate CSV files.
 generate_player_csv(players)
+generate_event_csv(events)
 generate_rating_csv(whr)
 generate_set_csv(sets)
 puts "Generated CSV files. Commit them into kernelthree.github.io"

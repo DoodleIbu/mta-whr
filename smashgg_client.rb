@@ -3,6 +3,7 @@ require 'uri'
 require 'json'
 require 'set'
 
+require_relative 'entity/event'
 require_relative 'entity/player'
 require_relative 'entity/event_set'
 
@@ -14,7 +15,12 @@ EVENT_SET_OPERATION_NAME = "EventSets"
 EVENT_SET_QUERY = "
     query EventSets($eventId: ID!, $page:Int!, $perPage:Int!){
       event(id:$eventId){
+        id
+        name
         startAt
+        tournament {
+          name
+        }
         sets(
           page: $page
           perPage: $perPage
@@ -49,6 +55,7 @@ EVENT_SET_QUERY = "
 
 # Retrieve smash.gg sets and players from an event.
 def get_smashgg_event(event_id)
+    event = nil
     players = Set.new()
     sets = []
 
@@ -57,8 +64,9 @@ def get_smashgg_event(event_id)
 
     while (page - 1) * SETS_PER_PAGE < total_sets
         response_map = JSON.parse(query_smashgg_event(event_id, page))
-        new_players, new_sets = transform_smashgg_event(response_map)
+        new_event, new_players, new_sets = transform_smashgg_event(response_map)
 
+        event = new_event
         players.merge(new_players)
         sets.concat(new_sets)        
 
@@ -66,7 +74,7 @@ def get_smashgg_event(event_id)
         page += 1
     end
 
-    return players, sets
+    return event, players, sets
 end
 
 def query_smashgg_event(event_id, page)
@@ -98,6 +106,10 @@ def transform_smashgg_event(map)
 
     smashgg_sets = map["data"]["event"]["sets"]["nodes"]
 
+    event_id = map["data"]["event"]["id"]
+    event_name = map["data"]["event"]["tournament"]["name"] + " | " + map["data"]["event"]["name"]
+
+    event = Event.new(event_id, event_name)
     players = Set.new()
     sets = []
 
@@ -128,12 +140,12 @@ def transform_smashgg_event(map)
         end
 
         # Create sets.
-        sets.push(EventSet.new(player1_id, player2_id, winner, event_day_number))
+        sets.push(EventSet.new(event_id, player1_id, player2_id, winner, event_day_number))
 
         # Create players.
         players.add(Player.new(player1_id, player1_name))
         players.add(Player.new(player2_id, player2_name))
     end
 
-    return players, sets
+    return event, players, sets
 end
