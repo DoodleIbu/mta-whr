@@ -65,7 +65,11 @@ def sort_by_date(sets)
     sets.sort! { |a, b| a.day_number <=> b.day_number }
 end
 
-def correct_player_ids(sets)
+def correct_player_ids(players, sets)
+    PLAYER_ID_MAP.keys.each do |player_id|
+        players.delete(Player.new(player_id))
+    end
+
     sets.each do |set|
         if PLAYER_ID_MAP.key?(set.player1_id)
             set.player1_id = PLAYER_ID_MAP[set.player1_id]
@@ -94,6 +98,7 @@ sets = []
 
 SMASHGG_EVENT_IDS.each do |smashgg_event_id|
     event, event_players, event_sets = get_smashgg_event(smashgg_event_id)
+    
     events.add(event)
     players.merge(event_players)
     sets.concat(event_sets)
@@ -104,7 +109,7 @@ end
 # it may be necessary.
 whr = WholeHistoryRating::Base.new
 
-correct_player_ids(sets)
+correct_player_ids(players, sets)
 sort_by_date(sets)
 create_whr_games(whr, sets)
 

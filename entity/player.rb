@@ -1,6 +1,6 @@
 class Player
 
-    def initialize(id, name)
+    def initialize(id, name=nil)
         @id = id # smash.gg numeric ID
         @name = name
     end
