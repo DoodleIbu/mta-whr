@@ -51,7 +51,7 @@ SMASHGG_EVENT_IDS = [
     341744, # MariTeni: Bill (Standard Singles)
     341746, # MariTeni: Bill (Low Tier Standard)
     352416, # Mario Tennis Aces - Swiss!
-
+    354814, # Mario Tennis Aces Club Open 5 - The Finale
 ]
 
 # TODO: Actually implement if we want to, but we usually don't use Challonge.
@@ -107,7 +107,7 @@ end
 # w2 is the variability of the ratings over time.
 # The default value of 300 is considered fairly high, but given the relatively few tournaments we have,
 # it may be necessary.
-whr = WholeHistoryRating::Base.new(:w2 => 100)
+whr = WholeHistoryRating::Base.new(:w2 => 300)
 
 correct_player_ids(players, sets)
 sort_by_date(sets)
