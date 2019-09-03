@@ -10,6 +10,8 @@ require_relative 'generate_csv'
 PLAYER_ID_MAP = {
     419570 => 1030534, # Pelupelu
     1112712 => 733592, # ibuprofen
+    880718 => 1085661, # Statsdotzip
+    963723 => 1252257, # Xeno
 }
 
 # TODO: Rate limit or store results locally so we don't need to refetch everything
@@ -52,6 +54,7 @@ SMASHGG_EVENT_IDS = [
     341746, # MariTeni: Bill (Low Tier Standard)
     352416, # Mario Tennis Aces - Swiss!
     354814, # Mario Tennis Aces Club Open 5 - The Finale
+    364952, # Switchfest 2
 ]
 
 # TODO: Actually implement if we want to, but we usually don't use Challonge.
