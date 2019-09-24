@@ -8,10 +8,10 @@ require_relative 'generate_csv'
 
 # Some players have multiple accounts. In this case, combine them.
 PLAYER_ID_MAP = {
-    419570 => 1030534, # Pelupelu
-    1112712 => 733592, # ibuprofen
-    880718 => 1085661, # Statsdotzip
-    963723 => 1252257, # Xeno
+    "S419570" => "S1030534", # Pelupelu
+    "S1112712" => "S733592", # ibuprofen
+    "S880718" => "S1085661", # Statsdotzip
+    "S963723" => "S1252257", # Xeno
 }
 
 # TODO: Rate limit or store results locally so we don't need to refetch everything
@@ -58,7 +58,7 @@ SMASHGG_EVENT_IDS = [
 ]
 
 CHALLONGE_EVENT_IDS = [
-    "mtatst1" # Trick Shot Tournament 1
+    7453651, # Trick Shot Tournament 1
 ]
 
 def sort_by_date(sets)
@@ -104,26 +104,35 @@ events = Set.new()
 players = Set.new()
 sets = []
 
+challonge_client = ChallongeClient.new()
+smashgg_client = SmashGGClient.new()
+
 CHALLONGE_EVENT_IDS.each do |challonge_event_id|
-    get_challonge_event(challonge_event_id)
+    event, event_players, event_sets = challonge_client.get_challonge_event(challonge_event_id)
+
+    events.add(event)
+    players.merge(event_players)
+    sets.concat(event_sets)
 end
 
-# SMASHGG_EVENT_IDS.each do |smashgg_event_id|
-#     event, event_players, event_sets = get_smashgg_event(smashgg_event_id)
+SMASHGG_EVENT_IDS.each do |smashgg_event_id|
+    event, event_players, event_sets = smashgg_client.get_smashgg_event(smashgg_event_id)
     
-#     events.add(event)
-#     players.merge(event_players)
-#     sets.concat(event_sets)
-# end
+    events.add(event)
+    players.merge(event_players)
+    sets.concat(event_sets)
+end
 
-# # w2 is the variability of the ratings over time.
-# # The default value of 300 is considered fairly high, but given the relatively few tournaments we have,
-# # it may be necessary.
-# whr = WholeHistoryRating::Base.new(:w2 => 300)
+# w2 is the variability of the ratings over time.
+# The default value of 300 is considered fairly high, but given the relatively few tournaments we have,
+# it may be necessary.
+whr = WholeHistoryRating::Base.new(:w2 => 300)
 
-# correct_player_ids(players, sets)
-# sort_by_date(sets)
-# create_whr_games(whr, sets)
-# whr.iterate(100)
+correct_player_ids(players, sets)
+sort_by_date(sets)
+create_whr_games(whr, sets)
 
-# generate_csv(players, events, sets, whr)
+whr.iterate(100)
+whr.print_ordered_ratings()
+
+generate_csv(players, events, sets, whr)

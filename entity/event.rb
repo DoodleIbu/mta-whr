@@ -6,7 +6,7 @@ class Event
     end
 
     def hash()
-        @id
+        @id.hash
     end
 
     def eql?(other)

@@ -1,12 +1,12 @@
 class Player
 
     def initialize(id, name=nil)
-        @id = id # smash.gg numeric ID
+        @id = id # Account ID prefixed by its source (C for Challonge, S for smash.gg).
         @name = name
     end
 
     def hash()
-        @id
+        @id.hash
     end
 
     def eql?(other)
