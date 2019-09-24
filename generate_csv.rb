@@ -1,6 +1,6 @@
 # Used for hosting the page at kernelthree.github.io
 def generate_player_csv(players)
-    file = File.new("players.csv", "w+")
+    file = File.new("csv/players.csv", "w+")
     lines = ["id,name"]
 
     players.each do |player|
@@ -12,7 +12,7 @@ def generate_player_csv(players)
 end
 
 def generate_event_csv(events)
-    file = File.new("events.csv", "w+")
+    file = File.new("csv/events.csv", "w+")
     lines = ["id,name"]
 
     events.each do |event|
@@ -24,7 +24,7 @@ def generate_event_csv(events)
 end
 
 def generate_set_csv(sets)
-    file = File.new("sets.csv", "w+")
+    file = File.new("csv/sets.csv", "w+")
     lines = ["event_id,player1_id,player2_id,winner,day"]
 
     sets.each do |set|
@@ -36,7 +36,7 @@ def generate_set_csv(sets)
 end
 
 def generate_rating_csv(whr)
-    file = File.new("ratings.csv", "w+")
+    file = File.new("csv/ratings.csv", "w+")
     lines = ["player_id,day,rating"]
 
     whr.players.values.each do |player|

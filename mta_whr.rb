@@ -1,11 +1,11 @@
 require 'set'
 require 'whole_history_rating'
 
-# TODO: this smells like doodoo
-require_relative 'smashgg_client'
+# TODO: Not a fan of require_relative since it can be hard to trace the path.
+require_relative 'client/smashgg_client'
+require_relative 'client/challonge_client'
 require_relative 'generate_csv'
 
-# TODO: Clean up messy awful doodoo code. :Bill:
 # Some players have multiple accounts. In this case, combine them.
 PLAYER_ID_MAP = {
     419570 => 1030534, # Pelupelu
@@ -57,11 +57,8 @@ SMASHGG_EVENT_IDS = [
     364952, # Switchfest 2
 ]
 
-# TODO: Actually implement if we want to, but we usually don't use Challonge.
 CHALLONGE_EVENT_IDS = [
-    # STT11
-    # STT12
-    # STT13
+    "mtatst1" # Trick Shot Tournament 1
 ]
 
 def sort_by_date(sets)
@@ -94,35 +91,39 @@ def create_whr_games(whr, sets)
     end
 end
 
+def generate_csv(players, events, sets, whr)
+    generate_player_csv(players)
+    generate_event_csv(events)
+    generate_rating_csv(whr)
+    generate_set_csv(sets)
+    puts "Generated CSV files. Commit them into kernelthree.github.io"
+end
+
 # Concatenate players and sets from all tournaments.
 events = Set.new()
 players = Set.new()
 sets = []
 
-SMASHGG_EVENT_IDS.each do |smashgg_event_id|
-    event, event_players, event_sets = get_smashgg_event(smashgg_event_id)
-    
-    events.add(event)
-    players.merge(event_players)
-    sets.concat(event_sets)
+CHALLONGE_EVENT_IDS.each do |challonge_event_id|
+    get_challonge_event(challonge_event_id)
 end
 
-# w2 is the variability of the ratings over time.
-# The default value of 300 is considered fairly high, but given the relatively few tournaments we have,
-# it may be necessary.
-whr = WholeHistoryRating::Base.new(:w2 => 300)
+# SMASHGG_EVENT_IDS.each do |smashgg_event_id|
+#     event, event_players, event_sets = get_smashgg_event(smashgg_event_id)
+    
+#     events.add(event)
+#     players.merge(event_players)
+#     sets.concat(event_sets)
+# end
 
-correct_player_ids(players, sets)
-sort_by_date(sets)
-create_whr_games(whr, sets)
+# # w2 is the variability of the ratings over time.
+# # The default value of 300 is considered fairly high, but given the relatively few tournaments we have,
+# # it may be necessary.
+# whr = WholeHistoryRating::Base.new(:w2 => 300)
 
-# Iterate the WHR algorithm towards convergence.
-whr.iterate(100)
-whr.print_ordered_ratings()
+# correct_player_ids(players, sets)
+# sort_by_date(sets)
+# create_whr_games(whr, sets)
+# whr.iterate(100)
 
-# Generate CSV files.
-generate_player_csv(players)
-generate_event_csv(events)
-generate_rating_csv(whr)
-generate_set_csv(sets)
-puts "Generated CSV files. Commit them into kernelthree.github.io"
+# generate_csv(players, events, sets, whr)

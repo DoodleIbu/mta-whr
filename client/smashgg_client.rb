@@ -3,9 +3,9 @@ require 'uri'
 require 'json'
 require 'set'
 
-require_relative 'entity/event'
-require_relative 'entity/player'
-require_relative 'entity/event_set'
+require_relative '../entity/event'
+require_relative '../entity/player'
+require_relative '../entity/event_set'
 
 MTA_RELEASE_TIME = Time.utc(2018, 6, 22)
 API_TOKEN = ENV["SMASHGG_API_TOKEN"]
