@@ -38,7 +38,7 @@ PLAYER_ID_MAP = {
     "S963723" => "S1252257", # Xeno
 }
 
-# TODO: Rate limit or store results locally so we don't need to refetch everything
+# TODO: Store results locally so we don't need to refetch everything
 SMASHGG_EVENT_IDS = [
 
     # Season 1: HEEHEE~
@@ -120,7 +120,6 @@ def generate_csv(players, events, sets, whr)
     generate_event_csv(events)
     generate_rating_csv(whr)
     generate_set_csv(sets)
-    puts "Generated CSV files. Commit them into kernelthree.github.io"
 end
 
 # Concatenate players and sets from all tournaments.
@@ -160,3 +159,4 @@ whr.iterate(100)
 whr.print_ordered_ratings()
 
 generate_csv(players, events, sets, whr)
+puts "Generated CSV files. Commit them into kernelthree.github.io"
