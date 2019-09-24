@@ -8,6 +8,30 @@ require_relative 'generate_csv'
 
 # Some players have multiple accounts. In this case, combine them.
 PLAYER_ID_MAP = {
+    # Challonge to smash.gg
+    "C105677281" => "S1259099", # LukeFlow
+    "C105669947" => "S1259790", # NatRop2
+    "C105656521" => "S1151677", # krispy.jin
+    "C105964270" => "S1039897", # Pito
+    "C105962886" => "S804769",  # PkKirby
+    # "C105642251", laboob
+    "C105828605" => "S1151317", # Toaster_EP
+    "C105960969" => "S875683",  # mtadavid
+    "C105806128" => "S1011138", # Vee
+    "C105963851" => "S981358",  # Nintendart
+    "C105638687" => "S875600",  # Angie
+    "C105635165" => "S804800",  # Hooky
+    "C105952954" => "S812825",  # PieHat
+    "C105637494" => "S802340",  # Schwell
+    "C105781624" => "S898077",  # IT!Darki
+    "C105759168" => "S296273",  # DevilWolf
+    "C105702926" => "S1152788", # Macman
+    # "C105940260", pancake
+    "C105635893" => "S877501",  # lilbigestjake
+    # "C105635170", Breazzy
+    "C105760412" => "S830764",  # crispy jr
+
+    # smash.gg duplicates
     "S419570" => "S1030534", # Pelupelu
     "S1112712" => "S733592", # ibuprofen
     "S880718" => "S1085661", # Statsdotzip
