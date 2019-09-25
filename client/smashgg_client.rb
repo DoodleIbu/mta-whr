@@ -8,15 +8,10 @@ require_relative '../entity/player'
 require_relative '../entity/event_set'
 
 # TODO: Hastily factored this out into a class to avoid conflicts with constants. Review this.
-# TODO: Create base class since the two clients share a common interface.
-class SmashGGClient
-
-    # smash.gg player IDs and event IDs are prefixed with S.
+class SmashggClient
     ID_TEMPLATE = "S%s"
     MTA_RELEASE_TIME = Time.utc(2018, 6, 22)
-    API_TOKEN = ENV["SMASHGG_API_TOKEN"]
     SETS_PER_PAGE = 50
-
     EVENT_SET_OPERATION_NAME = "EventSets"
     EVENT_SET_QUERY = "
         query EventSets($eventId: ID!, $page:Int!, $perPage:Int!){
@@ -59,8 +54,11 @@ class SmashGGClient
         }
     "
 
-    # Retrieve smash.gg sets and players from an event.
-    def get_smashgg_event(event_id)
+    def initialize(api_token)
+        @api_token = api_token
+    end
+
+    def get_event(event_id)
         event = nil
         players = Set.new()
         sets = []
@@ -69,8 +67,8 @@ class SmashGGClient
         total_sets = 2147483647
 
         while (page - 1) * SETS_PER_PAGE < total_sets
-            response_map = JSON.parse(query_smashgg_event(event_id, page))
-            new_event, new_players, new_sets = transform_smashgg_event(response_map)
+            response_map = JSON.parse(_query_event(event_id, page))
+            new_event, new_players, new_sets = _transform_event(response_map)
 
             event = new_event
             players.merge(new_players)
@@ -83,7 +81,7 @@ class SmashGGClient
         return event, players, sets
     end
 
-    def query_smashgg_event(event_id, page)
+    def _query_event(event_id, page)
         smashgg_variables = {
             "eventId" => event_id,
             "page" => page,
@@ -100,13 +98,13 @@ class SmashGGClient
             "variables" => smashgg_variables     
         }.to_json
         request["Content-Type"] = "application/json"
-        request["Authorization"] = "Bearer " + API_TOKEN
+        request["Authorization"] = "Bearer " + @api_token
 
         response = http.request(request)
         return response.body
     end
 
-    def transform_smashgg_event(map)
+    def _transform_event(map)
         event_start_time = Time.at(map["data"]["event"]["startAt"])
         event_day_number = (event_start_time - MTA_RELEASE_TIME).to_i / (24 * 60 * 60)
 
@@ -140,15 +138,12 @@ class SmashGGClient
             player1_name = player1_slot["entrant"]["name"]
             player2_name = player2_slot["entrant"]["name"]
             winner = if player1_slot["standing"]["placement"] == 1 then
-                "B" # Player 1
+                "B"
             else
-                "W" # Player 2
+                "W"
             end
 
-            # Create sets.
             sets.push(EventSet.new(event_id, player1_id, player2_id, winner, event_day_number))
-
-            # Create players.
             players.add(Player.new(player1_id, player1_name))
             players.add(Player.new(player2_id, player2_name))
         end

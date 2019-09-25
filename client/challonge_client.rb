@@ -10,14 +10,23 @@ require_relative '../entity/event_set'
 
 # TODO: Hastily factored this out into a class to avoid conflicts with constants. Review this.
 class ChallongeClient
-
-    # Challonge player IDs and event IDs are prefixed with S.
     ID_TEMPLATE = "C%s"
     MTA_RELEASE_TIME = Time.utc(2018, 6, 22)
-    API_TOKEN = ENV["CHALLONGE_API_TOKEN"]
 
-    def query_challonge_event(event_id)
-        uri = URI("https://api.challonge.com/v1/tournaments/%s.json?api_key=%s" % [event_id, API_TOKEN])
+    def initialize(api_token)
+        @api_token = api_token
+    end
+
+    def get_event(event_id)
+        event_map = JSON.parse(_query_event(event_id))
+        participants_map = JSON.parse(_query_event_participants(event_id))
+        matches_map = JSON.parse(_query_event_matches(event_id))
+
+        return _transform_event(event_map, participants_map, matches_map)
+    end
+
+    def _query_event(event_id)
+        uri = URI("https://api.challonge.com/v1/tournaments/%s.json?api_key=%s" % [event_id, @api_token])
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
         request = Net::HTTP::Get.new(uri.request_uri)
@@ -26,8 +35,8 @@ class ChallongeClient
         return response.body
     end
 
-    def query_challonge_event_participants(event_id)
-        uri = URI("https://api.challonge.com/v1/tournaments/%s/participants.json?api_key=%s" % [event_id, API_TOKEN])
+    def _query_event_participants(event_id)
+        uri = URI("https://api.challonge.com/v1/tournaments/%s/participants.json?api_key=%s" % [event_id, @api_token])
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
         request = Net::HTTP::Get.new(uri.request_uri)
@@ -36,8 +45,8 @@ class ChallongeClient
         return response.body
     end
 
-    def query_challonge_event_matches(event_id)
-        uri = URI("https://api.challonge.com/v1/tournaments/%s/matches.json?api_key=%s" % [event_id, API_TOKEN])
+    def _query_event_matches(event_id)
+        uri = URI("https://api.challonge.com/v1/tournaments/%s/matches.json?api_key=%s" % [event_id, @api_token])
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
         request = Net::HTTP::Get.new(uri.request_uri)
@@ -46,16 +55,7 @@ class ChallongeClient
         return response.body
     end
 
-    # Retrieve Challonge sets and players from an event.
-    def get_challonge_event(event_id)
-        event_map = JSON.parse(query_challonge_event(event_id))
-        participants_map = JSON.parse(query_challonge_event_participants(event_id))
-        matches_map = JSON.parse(query_challonge_event_matches(event_id))
-
-        return transform_challonge_event(event_map, participants_map, matches_map)
-    end
-
-    def generate_player_id_to_name_map(participants_map)
+    def _generate_player_id_to_name_map(participants_map)
         map = {}
 
         participants_map.each do |participant_map|
@@ -66,8 +66,8 @@ class ChallongeClient
         return map
     end
 
-    def transform_challonge_event(event_map, participants_map, matches_map)
-        player_id_to_name_map = generate_player_id_to_name_map(participants_map)
+    def _transform_event(event_map, participants_map, matches_map)
+        player_id_to_name_map = _generate_player_id_to_name_map(participants_map)
 
         tournament = event_map["tournament"]
         event_start_time = Time.parse(tournament["started_at"])
@@ -101,10 +101,7 @@ class ChallongeClient
                 "W"
             end
 
-            # Create sets.
             sets.push(EventSet.new(event_id, player1_id, player2_id, winner, event_day_number))
-
-            # Create players.
             players.add(Player.new(player1_id, player_id_to_name_map[player1_id]))
             players.add(Player.new(player2_id, player_id_to_name_map[player2_id]))
         end

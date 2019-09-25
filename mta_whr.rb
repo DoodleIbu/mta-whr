@@ -127,11 +127,11 @@ events = Set.new()
 players = Set.new()
 sets = []
 
-challonge_client = ChallongeClient.new()
-smashgg_client = SmashGGClient.new()
+challonge_client = ChallongeClient.new(ENV["CHALLONGE_API_TOKEN"])
+smashgg_client = SmashggClient.new(ENV["SMASHGG_API_TOKEN"])
 
 CHALLONGE_EVENT_IDS.each do |challonge_event_id|
-    event, event_players, event_sets = challonge_client.get_challonge_event(challonge_event_id)
+    event, event_players, event_sets = challonge_client.get_event(challonge_event_id)
 
     events.add(event)
     players.merge(event_players)
@@ -139,7 +139,7 @@ CHALLONGE_EVENT_IDS.each do |challonge_event_id|
 end
 
 SMASHGG_EVENT_IDS.each do |smashgg_event_id|
-    event, event_players, event_sets = smashgg_client.get_smashgg_event(smashgg_event_id)
+    event, event_players, event_sets = smashgg_client.get_event(smashgg_event_id)
     
     events.add(event)
     players.merge(event_players)
