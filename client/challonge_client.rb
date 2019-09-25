@@ -11,6 +11,7 @@ require_relative '../entity/event_set'
 # TODO: Hastily factored this out into a class to avoid conflicts with constants. Review this.
 class ChallongeClient
     ID_TEMPLATE = "C%s"
+    BASE_URL = "https://api.challonge.com/v1/tournaments/"
     MTA_RELEASE_TIME = Time.utc(2018, 6, 22)
 
     def initialize(api_token)
@@ -26,33 +27,18 @@ class ChallongeClient
     end
 
     def _query_event(event_id)
-        uri = URI("https://api.challonge.com/v1/tournaments/%s.json?api_key=%s" % [event_id, @api_token])
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true
-        request = Net::HTTP::Get.new(uri.request_uri)
-
-        response = http.request(request)
-        return response.body
+        uri = URI(BASE_URL + "%s.json?api_key=%s" % [event_id, @api_token])
+        return Net::HTTP.get(uri)
     end
 
     def _query_event_participants(event_id)
-        uri = URI("https://api.challonge.com/v1/tournaments/%s/participants.json?api_key=%s" % [event_id, @api_token])
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true
-        request = Net::HTTP::Get.new(uri.request_uri)
-
-        response = http.request(request)
-        return response.body
+        uri = URI(BASE_URL + "%s/participants.json?api_key=%s" % [event_id, @api_token])
+        return Net::HTTP.get(uri)
     end
 
     def _query_event_matches(event_id)
-        uri = URI("https://api.challonge.com/v1/tournaments/%s/matches.json?api_key=%s" % [event_id, @api_token])
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true
-        request = Net::HTTP::Get.new(uri.request_uri)
-
-        response = http.request(request)
-        return response.body
+        uri = URI(BASE_URL + "%s/matches.json?api_key=%s" % [event_id, @api_token])
+        return Net::HTTP.get(uri)
     end
 
     def _generate_player_id_to_name_map(participants_map)
