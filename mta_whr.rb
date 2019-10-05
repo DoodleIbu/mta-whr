@@ -80,7 +80,7 @@ SMASHGG_EVENT_IDS = [
     352416, # Mario Tennis Aces - Swiss!
     354814, # Mario Tennis Aces Club Open 5 - The Finale
     364952, # Switchfest 2
-    354814, # PKHat Peteypahlooza
+    401039, # PKHat Peteypahlooza
 ]
 
 CHALLONGE_EVENT_IDS = [
