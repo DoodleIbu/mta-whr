@@ -15,7 +15,7 @@ PLAYER_ID_MAP = {
     "C105964270" => "S1039897", # Pito
     "C105962886" => "S804769",  # PkKirby
     # "C105642251", laboob
-    "C105828605" => "S1151317", # Toaster_EP
+    # "C105828605", Toaster_EP
     "C105960969" => "S875683",  # mtadavid
     "C105806128" => "S1011138", # Vee
     "C105963851" => "S981358",  # Nintendart
@@ -38,7 +38,8 @@ PLAYER_ID_MAP = {
     "S963723" => "S1252257", # Xeno
 }
 
-# TODO: Store results locally so we don't need to refetch everything
+# TODO: Store results locally so we don't need to refetch everything.
+#       Should be done since the first call to smash.gg's API returns incomplete results.
 SMASHGG_EVENT_IDS = [
 
     # Season 1: HEEHEE~
@@ -79,6 +80,7 @@ SMASHGG_EVENT_IDS = [
     352416, # Mario Tennis Aces - Swiss!
     354814, # Mario Tennis Aces Club Open 5 - The Finale
     364952, # Switchfest 2
+    354814, # PKHat Peteypahlooza
 ]
 
 CHALLONGE_EVENT_IDS = [
@@ -89,7 +91,7 @@ def sort_by_date(sets)
     sets.sort! { |a, b| a.day_number <=> b.day_number }
 end
 
-def correct_player_ids(players, sets)
+def map_player_ids(players, sets)
     PLAYER_ID_MAP.keys.each do |player_id|
         players.delete(Player.new(player_id))
     end
@@ -151,7 +153,7 @@ end
 # it may be necessary.
 whr = WholeHistoryRating::Base.new(:w2 => 300)
 
-correct_player_ids(players, sets)
+map_player_ids(players, sets)
 sort_by_date(sets)
 create_whr_games(whr, sets)
 
