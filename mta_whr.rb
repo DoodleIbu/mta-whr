@@ -194,4 +194,4 @@ csv_writer.write_players("csv/players.csv", players)
 csv_writer.write_events("csv/events.csv", events)
 csv_writer.write_sets("csv/sets.csv", sets)
 csv_writer.write_ratings("csv/ratings.csv", whr)
-puts "Generated CSV files. Commit them into doodleibu.github.io"
+puts "Generated CSV files. Commit them into mta-whr."
