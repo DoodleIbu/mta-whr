@@ -4,7 +4,8 @@ require 'whole_history_rating'
 # TODO: Not a fan of require_relative since it can be hard to trace the path.
 require_relative 'client/smashgg_client'
 require_relative 'client/challonge_client'
-require_relative 'generate_csv'
+require_relative 'csv_reader'
+require_relative 'csv_writer'
 
 # Some players have multiple accounts. In this case, combine them.
 PLAYER_ID_MAP = {
@@ -14,28 +15,28 @@ PLAYER_ID_MAP = {
     "C105656521" => "S1151677", # krispy.jin
     "C105964270" => "S1039897", # Pito
     "C105962886" => "S804769",  # PkKirby
-    # "C105642251", laboob
-    # "C105828605", Toaster_EP
     "C105960969" => "S875683",  # mtadavid
     "C105806128" => "S1011138", # Vee
     "C105963851" => "S981358",  # Nintendart
     "C105638687" => "S875600",  # Angie
     "C105635165" => "S804800",  # Hooky
     "C105952954" => "S812825",  # PieHat
+    "C107324989" => "S812825",  # PieHat
     "C105637494" => "S802340",  # Schwell
     "C105781624" => "S898077",  # IT!Darki
     "C105759168" => "S296273",  # DevilWolf
     "C105702926" => "S1152788", # Macman
-    # "C105940260", pancake
     "C105635893" => "S877501",  # lilbigestjake
-    # "C105635170", Breazzy
     "C105760412" => "S830764",  # crispy jr
+    "C107063457" => "S1466323", # lxpu
+    "C107064251" => "S494940",  # Ghostgodzilla
 
     # smash.gg duplicates
     "S419570" => "S1030534", # Pelupelu
     "S1112712" => "S733592", # ibuprofen
     "S880718" => "S1085661", # Statsdotzip
     "S963723" => "S1252257", # Xeno
+    "S1256064" => "S1153395", # Benny Burrito
 }
 
 # TODO: Store results locally so we don't need to refetch everything.
@@ -81,10 +82,12 @@ SMASHGG_EVENT_IDS = [
     354814, # Mario Tennis Aces Club Open 5 - The Finale
     364952, # Switchfest 2
     401039, # PKHat Peteypahlooza
+    406125, # Trick Shot Tourney #3
 ]
 
 CHALLONGE_EVENT_IDS = [
     7453651, # Trick Shot Tournament 1
+    "wfcsnku7", # Torneo Mansion Espejismo
 ]
 
 def sort_by_date(sets)
@@ -117,13 +120,6 @@ def create_whr_games(whr, sets)
     end
 end
 
-def generate_csv(players, events, sets, whr)
-    generate_player_csv(players)
-    generate_event_csv(events)
-    generate_rating_csv(whr)
-    generate_set_csv(sets)
-end
-
 # Concatenate players and sets from all tournaments.
 events = Set.new()
 players = Set.new()
@@ -140,13 +136,13 @@ CHALLONGE_EVENT_IDS.each do |challonge_event_id|
     sets.concat(event_sets)
 end
 
-SMASHGG_EVENT_IDS.each do |smashgg_event_id|
-    event, event_players, event_sets = smashgg_client.get_event(smashgg_event_id)
+# SMASHGG_EVENT_IDS.each do |smashgg_event_id|
+#     event, event_players, event_sets = smashgg_client.get_event(smashgg_event_id)
     
-    events.add(event)
-    players.merge(event_players)
-    sets.concat(event_sets)
-end
+#     events.add(event)
+#     players.merge(event_players)
+#     sets.concat(event_sets)
+# end
 
 # w2 is the variability of the ratings over time.
 # The default value of 300 is considered fairly high, but given the relatively few tournaments we have,
@@ -160,5 +156,9 @@ create_whr_games(whr, sets)
 whr.iterate(100)
 whr.print_ordered_ratings()
 
-generate_csv(players, events, sets, whr)
-puts "Generated CSV files. Commit them into kernelthree.github.io"
+csv_writer = CsvWriter.new()
+csv_writer.write_players("csv/players.csv", players)
+csv_writer.write_events("csv/events.csv", events)
+csv_writer.write_sets("csv/sets.csv", sets)
+csv_writer.write_ratings("csv/ratings.csv", whr)
+puts "Generated CSV files. Commit them into doodleibu.github.io"

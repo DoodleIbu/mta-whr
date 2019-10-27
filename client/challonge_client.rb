@@ -46,7 +46,12 @@ class ChallongeClient
 
         participants_map.each do |participant_map|
             participant = participant_map["participant"]
-            map[ID_TEMPLATE % participant["id"]] = participant["challonge_username"]
+
+            if participant["challonge_username"] != nil
+                map[ID_TEMPLATE % participant["id"]] = participant["challonge_username"]
+            elsif participant["name"] != nil
+                map[ID_TEMPLATE % participant["id"]] = participant["name"]
+            end
         end
 
         return map
