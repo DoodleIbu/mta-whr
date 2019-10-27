@@ -1,5 +1,6 @@
 require 'set'
 require 'whole_history_rating'
+require 'fileutils'
 
 # TODO: Not a fan of require_relative since it can be hard to trace the path.
 require_relative 'client/smashgg_client'
@@ -86,7 +87,7 @@ SMASHGG_EVENT_IDS = [
 ]
 
 CHALLONGE_EVENT_IDS = [
-    7453651, # Trick Shot Tournament 1
+    "7453651",  # Trick Shot Tournament 1
     "wfcsnku7", # Torneo Mansion Espejismo
 ]
 
@@ -127,22 +128,55 @@ sets = []
 
 challonge_client = ChallongeClient.new(ENV["CHALLONGE_API_TOKEN"])
 smashgg_client = SmashggClient.new(ENV["SMASHGG_API_TOKEN"])
+csv_reader = CsvReader.new()
+csv_writer = CsvWriter.new()
 
+# TODO: Create a class to do all of this and dedupe.
 CHALLONGE_EVENT_IDS.each do |challonge_event_id|
-    event, event_players, event_sets = challonge_client.get_event(challonge_event_id)
+    event = nil
+    event_players = []
+    event_sets = []
+
+    directory = "csv/C%s" % challonge_event_id
+    if File.directory?(directory)
+        event = csv_reader.read_events(directory + "/events.csv")[0]
+        event_players = csv_reader.read_players(directory + "/players.csv")
+        event_sets = csv_reader.read_sets(directory + "/sets.csv")
+    else
+        event, event_players, event_sets = challonge_client.get_event(challonge_event_id)
+        FileUtils.mkdir_p(directory)
+        csv_writer.write_events(directory + "/events.csv", [event])
+        csv_writer.write_players(directory + "/players.csv", event_players)
+        csv_writer.write_sets(directory + "/sets.csv", event_sets)
+    end
 
     events.add(event)
     players.merge(event_players)
     sets.concat(event_sets)
 end
 
-# SMASHGG_EVENT_IDS.each do |smashgg_event_id|
-#     event, event_players, event_sets = smashgg_client.get_event(smashgg_event_id)
+SMASHGG_EVENT_IDS.each do |smashgg_event_id|
+    event = nil
+    event_players = []
+    event_sets = []
+
+    directory = "csv/S%d" % smashgg_event_id
+    if File.directory?(directory)
+        event = csv_reader.read_events(directory + "/events.csv")[0]
+        event_players = csv_reader.read_players(directory + "/players.csv")
+        event_sets = csv_reader.read_sets(directory + "/sets.csv")
+    else
+        event, event_players, event_sets = smashgg_client.get_event(smashgg_event_id)
+        FileUtils.mkdir_p(directory)
+        csv_writer.write_events(directory + "/events.csv", [event])
+        csv_writer.write_players(directory + "/players.csv", event_players)
+        csv_writer.write_sets(directory + "/sets.csv", event_sets)
+    end
     
-#     events.add(event)
-#     players.merge(event_players)
-#     sets.concat(event_sets)
-# end
+    events.add(event)
+    players.merge(event_players)
+    sets.concat(event_sets)
+end
 
 # w2 is the variability of the ratings over time.
 # The default value of 300 is considered fairly high, but given the relatively few tournaments we have,
@@ -156,7 +190,6 @@ create_whr_games(whr, sets)
 whr.iterate(100)
 whr.print_ordered_ratings()
 
-csv_writer = CsvWriter.new()
 csv_writer.write_players("csv/players.csv", players)
 csv_writer.write_events("csv/events.csv", events)
 csv_writer.write_sets("csv/sets.csv", sets)
