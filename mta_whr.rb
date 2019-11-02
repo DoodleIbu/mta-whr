@@ -31,6 +31,7 @@ PLAYER_ID_MAP = {
     "C105760412" => "S830764",  # crispy jr
     "C107063457" => "S1466323", # lxpu
     "C107064251" => "S494940",  # Ghostgodzilla
+    "C107063608" => "S1499888", # Danguitos
 
     # smash.gg duplicates
     "S419570" => "S1030534", # Pelupelu
@@ -38,6 +39,7 @@ PLAYER_ID_MAP = {
     "S880718" => "S1085661", # Statsdotzip
     "S963723" => "S1252257", # Xeno
     "S1256064" => "S1153395", # Benny Burrito
+    "S877308" => "S1245341", # OmeGa 0oF
 }
 
 # TODO: Store results locally so we don't need to refetch everything.
