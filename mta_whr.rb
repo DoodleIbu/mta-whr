@@ -87,6 +87,7 @@ SMASHGG_EVENT_IDS = [
     401039, # PKHat Peteypahlooza
     406125, # Trick Shot Tourney #3
     411090, # Trick Shot Tourney #4
+    417786, # Trick Shot Tourney #5
 ]
 
 CHALLONGE_EVENT_IDS = [
