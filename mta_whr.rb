@@ -32,14 +32,15 @@ PLAYER_ID_MAP = {
     "C107063457" => "S1466323", # lxpu
     "C107064251" => "S494940",  # Ghostgodzilla
     "C107063608" => "S1499888", # Danguitos
+    "C105635170" => "S1584255", # Breazzy
 
     # smash.gg duplicates
-    "S419570" => "S1030534", # Pelupelu
-    "S1112712" => "S733592", # ibuprofen
-    "S880718" => "S1085661", # Statsdotzip
-    "S963723" => "S1252257", # Xeno
+    "S419570" => "S1030534",  # Pelupelu
+    "S1112712" => "S733592",  # ibuprofen
+    "S880718" => "S1085661",  # Statsdotzip
+    "S963723" => "S1252257",  # Xeno
     "S1256064" => "S1153395", # Benny Burrito
-    "S877308" => "S1245341", # OmeGa 0oF
+    "S877308" => "S1245341",  # OmeGa 0oF
 }
 
 # TODO: Store results locally so we don't need to refetch everything.
