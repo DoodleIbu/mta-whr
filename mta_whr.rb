@@ -91,6 +91,7 @@ SMASHGG_EVENT_IDS = [
     417786, # Trick Shot Tourney #5
     421480, # Trick Shot Tourney #6
     424688, # Aces Club Holiday Extravaganza: The Second Coming
+    439357, # Trick Shot Tourney #8
 ]
 
 CHALLONGE_EVENT_IDS = [
@@ -134,7 +135,7 @@ players = Set.new()
 sets = []
 
 challonge_client = ChallongeClient.new(ENV["CHALLONGE_API_TOKEN"])
-smashgg_client = SmashggClient.new(ENV["SMASHGG_API_TOKEN"])
+smashgg_client = SmashggClient.new('1e31ebdee811bd14479b05553e638765')
 csv_reader = CsvReader.new()
 csv_writer = CsvWriter.new()
 
