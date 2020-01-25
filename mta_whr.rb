@@ -135,7 +135,7 @@ players = Set.new()
 sets = []
 
 challonge_client = ChallongeClient.new(ENV["CHALLONGE_API_TOKEN"])
-smashgg_client = SmashggClient.new('1e31ebdee811bd14479b05553e638765')
+smashgg_client = SmashggClient.new(ENV["SMASHGG_API_TOKEN"])
 csv_reader = CsvReader.new()
 csv_writer = CsvWriter.new()
 
