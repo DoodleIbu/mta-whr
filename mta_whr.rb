@@ -92,7 +92,6 @@ SMASHGG_EVENT_IDS = [
     421480, # Trick Shot Tourney #6
     424688, # Aces Club Holiday Extravaganza: The Second Coming
     439357, # Trick Shot Tourney #8
-    439361, # Kappa
 ]
 
 CHALLONGE_EVENT_IDS = [
