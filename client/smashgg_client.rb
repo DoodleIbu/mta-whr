@@ -44,7 +44,9 @@ class SmashggClient
                   entrant {
                     name
                     participants {
-                      playerId
+                      player {
+                        id
+                      }
                     }
                   }
                 }
@@ -133,10 +135,11 @@ class SmashggClient
                 next
             end
 
-            player1_id = ID_TEMPLATE % player1_slot["entrant"]["participants"][0]["playerId"]
-            player2_id = ID_TEMPLATE % player2_slot["entrant"]["participants"][0]["playerId"]
+            player1_id = ID_TEMPLATE % player1_slot["entrant"]["participants"][0]["player"]["id"]
+            player2_id = ID_TEMPLATE % player2_slot["entrant"]["participants"][0]["player"]["id"]
             player1_name = player1_slot["entrant"]["name"]
             player2_name = player2_slot["entrant"]["name"]
+
             winner = if player1_slot["standing"]["placement"] == 1 then
                 "B"
             else
