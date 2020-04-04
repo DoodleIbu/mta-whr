@@ -11,7 +11,7 @@ require_relative '../entity/event_set'
 class SmashggClient
     ID_TEMPLATE = "S%s"
     MTA_RELEASE_TIME = Time.utc(2018, 6, 22)
-    SETS_PER_PAGE = 50
+    SETS_PER_PAGE = 40
     EVENT_SET_OPERATION_NAME = "EventSets"
     EVENT_SET_QUERY = "
         query EventSets($eventId: ID!, $page:Int!, $perPage:Int!){
