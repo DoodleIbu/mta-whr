@@ -95,6 +95,7 @@ SMASHGG_EVENT_IDS = [
     464814, # Trick Shot Tourney #10
     469993, # Trick Shot Tourney #11
     474435, # Trick Shot Tourney #12
+    478929, # Trick Shot Tourney #13
 ]
 
 CHALLONGE_EVENT_IDS = [
