@@ -193,7 +193,7 @@ end
 # w2 is the variability of the ratings over time.
 # The default value of 300 is considered fairly high, but given the relatively few tournaments we have,
 # it may be necessary.
-whr = WholeHistoryRating::Base.new(:w2 => 300)
+whr = WholeHistoryRating::Base.new(:w2 => 100)
 
 map_player_ids(players, sets)
 sort_by_date(sets)
