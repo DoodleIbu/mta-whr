@@ -100,6 +100,7 @@ SMASHGG_EVENT_IDS = [
     483234, # Trick Shot Tourney #14
     478096, # Switch to Save Lives
     489979, # Trick Shot Tourney #15
+    490573, # ARMS of Smash: Trick Shot
 ]
 
 CHALLONGE_EVENT_IDS = [
