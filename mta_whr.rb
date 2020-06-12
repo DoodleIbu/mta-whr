@@ -42,6 +42,7 @@ PLAYER_ID_MAP = {
     "S1256064" => "S1153395", # Benny Burrito
     "S877308" => "S1245341",  # OmeGa 0oF
     "S1041169" => "S906275", # michaelcarca6
+    "S1889941" => "S840485", # Marcus
 }
 
 # TODO: Store results locally so we don't need to refetch everything.
