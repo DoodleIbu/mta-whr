@@ -33,6 +33,11 @@ PLAYER_ID_MAP = {
     "C107064251" => "S494940",  # Ghostgodzilla
     "C107063608" => "S1499888", # Danguitos
     "C105635170" => "S1584255", # Breazzy
+    "C124103167" => "S840485", # Marcus
+    "C124112756" => "S803914", # Bad Joe
+    "C123652763" => "S1259790", # NatRop2
+    "C123726084" => "S1809282", # Zelgodez
+    "C124115427" => "S1582596", # Gordolo
 
     # smash.gg duplicates
     "S419570" => "S1030534",  # Pelupelu
@@ -43,6 +48,9 @@ PLAYER_ID_MAP = {
     "S877308" => "S1245341",  # OmeGa 0oF
     "S1041169" => "S906275", # michaelcarca6
     "S1889941" => "S840485", # Marcus
+
+    # Challonge duplicates
+    "C123799326" => "C107683058", # PatoGw
 }
 
 # TODO: Store results locally so we don't need to refetch everything.
@@ -107,6 +115,7 @@ SMASHGG_EVENT_IDS = [
 CHALLONGE_EVENT_IDS = [
     "7453651",  # Trick Shot Tournament 1
     "wfcsnku7", # Torneo Mansion Espejismo
+    "8541013", # Quarantined Rapport 2
 ]
 
 def sort_by_date(sets)
