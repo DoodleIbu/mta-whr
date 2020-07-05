@@ -91,7 +91,6 @@ SMASHGG_EVENT_IDS = [
     # Season 3: I DON'T WANT THE NEW CHARACTERS NO MORE
     229370, # GatorLAN Spring 2019
     341744, # MariTeni: Bill (Standard Singles)
-    341746, # MariTeni: Bill (Low Tier Standard)
     352416, # Mario Tennis Aces - Swiss!
     354814, # Mario Tennis Aces Club Open 5 - The Finale
     364952, # Switchfest 2
@@ -110,6 +109,8 @@ SMASHGG_EVENT_IDS = [
     478096, # Switch to Save Lives
     489979, # Trick Shot Tourney #15
     490573, # ARMS of Smash: Trick Shot
+    498408, # Trick Shot Tourney #16
+    498412, # Trick Shot Tourney #16 (Amateur)
 ]
 
 CHALLONGE_EVENT_IDS = [
