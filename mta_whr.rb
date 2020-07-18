@@ -111,6 +111,8 @@ SMASHGG_EVENT_IDS = [
     490573, # ARMS of Smash: Trick Shot
     498408, # Trick Shot Tourney #16
     498412, # Trick Shot Tourney #16 (Amateur)
+    502471, # Trick Shot Tourney #17
+    502473, # Trick Shot Tourney #17 (Amateur)
 ]
 
 CHALLONGE_EVENT_IDS = [
