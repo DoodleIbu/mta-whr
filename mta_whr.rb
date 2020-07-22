@@ -53,8 +53,6 @@ PLAYER_ID_MAP = {
     "C123799326" => "C107683058", # PatoGw
 }
 
-# TODO: Store results locally so we don't need to refetch everything.
-#       Should be done since the first call to smash.gg's API returns incomplete results.
 SMASHGG_EVENT_IDS = [
 
     # Season 1: HEEHEE~
@@ -118,7 +116,49 @@ SMASHGG_EVENT_IDS = [
 CHALLONGE_EVENT_IDS = [
     "7453651",  # Trick Shot Tournament 1
     "wfcsnku7", # Torneo Mansion Espejismo
-    "8541013", # Quarantined Rapport 2
+    "8541013",  # Quarantined Rapport 2
+]
+
+SIMPLE_SMASH_GG_EVENT_IDS = [
+    257356, # Aces Club Holiday Extravaganza!
+    273347, # Welcome Challengers! ~ Mario Tennis: Aces "GG Circuit" Tourney #1
+    323796, # 2 Good Guys impromptu open
+    330948, # MariTeni: Luigisuccapalooza
+    330901, # Mario Tennis Aces Club Open #4
+    341745, # MariTeni: Bill
+    352417, # Mario Tennis Aces - Swiss!
+    356199, # Mario Tennis Aces Club Open #5
+    372447, # Mario Tennis Aces Club EU Weeklies #1
+    372310, # Mario Tennis Aces Club NA/SA Weeklies #1
+    372984, # Mason's Monthly: July Kickoff
+    386052, # Mason's Monthly: August Action
+    393108, # Mason's Monthly: September Skirmish
+    401040, # PKHat Peteypahlooza
+    404951, # Mason's Monthly: October Open
+    411092, # Star Flat Tourney #4
+    417787, # Star Flat Tourney #5
+    421481, # Star Flat Tourney #6
+    424692, # Aces Club Holiday Extravaganza: The Second Coming
+    434586, # Star Flat Tourney #7
+    464815, # Trick Shot Tourney #10
+    469994, # Trick Shot Tourney #11
+    474436, # Trick Shot Tourney #12
+    478930, # Trick Shot Tourney #13
+    483235, # Trick Shot Tourney #14
+    489980, # Trick Shot Tourney #15
+    498410, # Trick Shot Tourney #16
+    498414, # Trick Shot Tourney #16 (Amateur)
+    502472, # Trick Shot Tourney #17
+    502474, # Trick Shot Tourney #17 (Amateur)
+]
+
+SIMPLE_CHALLONGE_EVENT_IDS = [
+    "sftnasa2",
+    "sfteu2",
+    "sftnasa3",
+    "sfteu3",
+    "sftnasa4",
+    "sfteu4",
 ]
 
 def sort_by_date(sets)
