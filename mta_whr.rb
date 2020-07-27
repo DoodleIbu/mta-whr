@@ -111,6 +111,7 @@ SMASHGG_EVENT_IDS = [
     498412, # Trick Shot Tourney #16 (Amateur)
     502471, # Trick Shot Tourney #17
     502473, # Trick Shot Tourney #17 (Amateur)
+    504524, # Mario Tennis Aces European Open
 ]
 
 CHALLONGE_EVENT_IDS = [
@@ -119,7 +120,7 @@ CHALLONGE_EVENT_IDS = [
     "8541013",  # Quarantined Rapport 2
 ]
 
-SIMPLE_SMASH_GG_EVENT_IDS = [
+SIMPLE_SMASHGG_EVENT_IDS = [
     257356, # Aces Club Holiday Extravaganza!
     273347, # Welcome Challengers! ~ Mario Tennis: Aces "GG Circuit" Tourney #1
     323796, # 2 Good Guys impromptu open
