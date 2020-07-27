@@ -38,6 +38,8 @@ PLAYER_ID_MAP = {
     "C123652763" => "S1259790", # NatRop2
     "C123726084" => "S1809282", # Zelgodez
     "C124115427" => "S1582596", # Gordolo
+    "C124071402" => "S1107203", # Igney
+    "C124115187" => "S1638615", # Guntz
 
     # smash.gg duplicates
     "S419570" => "S1030534",  # Pelupelu
