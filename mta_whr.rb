@@ -116,6 +116,9 @@ SMASHGG_EVENT_IDS = [
     504524, # Mario Tennis Aces European Open
     506211, # Trick Shot Tourney #18
     506213, # Trick Shot Tourney #18 (Amateur)
+    513662, # Trick Shot Tourney #19
+    513664, # Trick Shot Tourney #19 (Amateur)
+    517341, # Trick Shot Tourney #20
 ]
 
 CHALLONGE_EVENT_IDS = [
