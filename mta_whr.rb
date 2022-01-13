@@ -46,6 +46,7 @@ PLAYER_ID_MAP = {
     "C140143569" => "S1063941", # Niki
     "C158652896" => "S1063941", # Niki
     "C154831727" => "S929825",  # Joey
+    "C139801749" => "S296273",  # Saburo
 
     # smash.gg duplicates
     "S419570" => "S1030534",  # Pelupelu
