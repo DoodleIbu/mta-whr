@@ -27,7 +27,8 @@ PLAYER_ID_MAP = {
     "C107324989" => "S812825",  # PieHat
     "C105637494" => "S802340",  # Schwell
     "C105781624" => "S898077",  # IT!Darki
-    "C105759168" => "S296273",  # DevilWolf
+    "C105759168" => "S296273",  # Saburo
+    "C139801749" => "S296273",  # Saburo
     "C105702926" => "S1152788", # Macman
     "C105635893" => "S877501",  # lilbigestjake
     "C105760412" => "S830764",  # crispy jr
@@ -46,7 +47,6 @@ PLAYER_ID_MAP = {
     "C140143569" => "S1063941", # Niki
     "C158652896" => "S1063941", # Niki
     "C154831727" => "S929825",  # Joey
-    "C139801749" => "S296273",  # Saburo
 
     # smash.gg duplicates
     "S419570" => "S1030534",  # Pelupelu
