@@ -33,8 +33,8 @@ PLAYER_ID_MAP = {
     "C107064251" => "S494940",  # Ghostgodzilla
     "C107063608" => "S1499888", # Danguitos
     "C105635170" => "S1584255", # Breazzy
-    "C124103167" => "S840485", # Marcus
-    "C124112756" => "S803914", # Bad Joe
+    "C124103167" => "S840485",  # Marcus
+    "C124112756" => "S803914",  # Bad Joe
     "C123652763" => "S1259790", # NatRop2
     "C123726084" => "S1809282", # Zelgodez
     "C124115427" => "S1582596", # Gordolo
@@ -122,54 +122,31 @@ SMASHGG_EVENT_IDS = [
     522590, # Trick Shot Tourney #21
     526032, # Trick Shot Tourney #22
     521897, # Spooktacular
+    538595, # Trick Shot Tourney #23
+    540610, # Aces Club Holiday Extravaganza: The Three Wise Chomps
+    544482, # Trick Shot Tourney #24
+    562008, # Trick Shot Tourney #25
+    562010, # Trick Shot Tourney #25 (Amateur)
+    569209, # Trick Shot Tourney #26
+    572821, # May the Slice be With You!
+    576772, # Zelcadia Cup (Experienced)
+    576769, # Zelcadia Cup (Amateur)
+    584678, # Trick Shot Tourney #27
+    589026, # MTA 3rd Anniversary
+    600278, # Trick Shot Tourney #28
+    609472, # Trick Shot Tourney #29
+    618224, # Trick Shot Tourney #30
+    628093, # 2nd Zelcadia Cup (Experienced)
+    628092, # 2nd Zelcadia Cup (Amateur)
+    657843, # Aces Club Holiday Extravaganza: Four Calling Birdos
 ]
 
 CHALLONGE_EVENT_IDS = [
-    "7453651",  # Trick Shot Tournament 1
-    "wfcsnku7", # Torneo Mansion Espejismo
-    "8541013",  # Quarantined Rapport 2
-]
-
-SIMPLE_SMASHGG_EVENT_IDS = [
-    257356, # Aces Club Holiday Extravaganza!
-    273347, # Welcome Challengers! ~ Mario Tennis: Aces "GG Circuit" Tourney #1
-    323796, # 2 Good Guys impromptu open
-    330948, # MariTeni: Luigisuccapalooza
-    330901, # Mario Tennis Aces Club Open #4
-    341745, # MariTeni: Bill
-    352417, # Mario Tennis Aces - Swiss!
-    356199, # Mario Tennis Aces Club Open #5
-    372447, # Mario Tennis Aces Club EU Weeklies #1
-    372310, # Mario Tennis Aces Club NA/SA Weeklies #1
-    372984, # Mason's Monthly: July Kickoff
-    386052, # Mason's Monthly: August Action
-    393108, # Mason's Monthly: September Skirmish
-    401040, # PKHat Peteypahlooza
-    404951, # Mason's Monthly: October Open
-    411092, # Star Flat Tourney #4
-    417787, # Star Flat Tourney #5
-    421481, # Star Flat Tourney #6
-    424692, # Aces Club Holiday Extravaganza: The Second Coming
-    434586, # Star Flat Tourney #7
-    464815, # Trick Shot Tourney #10
-    469994, # Trick Shot Tourney #11
-    474436, # Trick Shot Tourney #12
-    478930, # Trick Shot Tourney #13
-    483235, # Trick Shot Tourney #14
-    489980, # Trick Shot Tourney #15
-    498410, # Trick Shot Tourney #16
-    498414, # Trick Shot Tourney #16 (Amateur)
-    502472, # Trick Shot Tourney #17
-    502474, # Trick Shot Tourney #17 (Amateur)
-]
-
-SIMPLE_CHALLONGE_EVENT_IDS = [
-    "sftnasa2",
-    "sfteu2",
-    "sftnasa3",
-    "sfteu3",
-    "sftnasa4",
-    "sfteu4",
+    "7453651",                   # Trick Shot Tournament 1
+    "wfcsnku7",                  # Torneo Mansion Espejismo
+    "8541013",                   # Quarantined Rapport 2
+    "quarterlyrapport-quar3mta", # Quarantined Rapport 3
+    "quarterlyrapport-quar4mta", # Quarantined Rapport 4
 ]
 
 def sort_by_date(sets)
@@ -207,8 +184,8 @@ events = Set.new()
 players = Set.new()
 sets = []
 
-challonge_client = ChallongeClient.new(ENV["CHALLONGE_API_TOKEN"])
-smashgg_client = SmashggClient.new(ENV["SMASHGG_API_TOKEN"])
+challonge_client = ChallongeClient.new('Qqef3xG7VT2oj32rFBAJemWT3hqh4HwswZXpAPGM')
+smashgg_client = SmashggClient.new('600eb54920701e12e2a947f1775cd632')
 csv_reader = CsvReader.new()
 csv_writer = CsvWriter.new()
 
