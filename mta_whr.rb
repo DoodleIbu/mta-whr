@@ -14,6 +14,7 @@ PLAYER_ID_MAP = {
     "C105677281" => "S1259099", # LukeFlow
     "C105669947" => "S1259790", # NatRop2
     "C123652763" => "S1259790", # NatRop2
+    "C140058883" => "S1259790", # NatRop2
     "C155153410" => "S1259790", # NatRop2
     "C105656521" => "S1151677", # krispy.jin
     "C105964270" => "S1039897", # Pito
@@ -47,6 +48,12 @@ PLAYER_ID_MAP = {
     "C140143569" => "S1063941", # Niki
     "C158652896" => "S1063941", # Niki
     "C154831727" => "S929825",  # Joey
+    "C158657707" => "S1259099", # LukeFlow
+    "C140455988" => "S1677661", # Me, Ed
+    "C140167075" => "S2227966",  # Icepixel28
+    "C140446987" => "S824927",   # Lanzius
+    "C140456243" => "S1235295"  # Laggy
+
 
     # smash.gg duplicates
     "S419570" => "S1030534",  # Pelupelu
@@ -192,8 +199,8 @@ events = Set.new()
 players = Set.new()
 sets = []
 
-challonge_client = ChallongeClient.new('Qqef3xG7VT2oj32rFBAJemWT3hqh4HwswZXpAPGM')
-smashgg_client = SmashggClient.new('600eb54920701e12e2a947f1775cd632')
+challonge_client = ChallongeClient.new('')
+smashgg_client = SmashggClient.new('')
 csv_reader = CsvReader.new()
 csv_writer = CsvWriter.new()
 
