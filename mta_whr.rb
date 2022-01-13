@@ -52,7 +52,7 @@ PLAYER_ID_MAP = {
     "C140455988" => "S1677661", # Me, Ed
     "C140167075" => "S2227966",  # Icepixel28
     "C140446987" => "S824927",   # Lanzius
-    "C140456243" => "S1235295"  # Laggy
+    "C140456243" => "S1235295",  # Laggy
 
 
     # smash.gg duplicates
@@ -199,8 +199,8 @@ events = Set.new()
 players = Set.new()
 sets = []
 
-challonge_client = ChallongeClient.new('')
-smashgg_client = SmashggClient.new('')
+challonge_client = ChallongeClient.new(ENV['CHALLONGE_API_KEY'])
+smashgg_client = SmashggClient.new(ENV['SMASHGG_API_KEY'])
 csv_reader = CsvReader.new()
 csv_writer = CsvWriter.new()
 
