@@ -45,6 +45,7 @@ PLAYER_ID_MAP = {
     "C124115187" => "S1638615", # Guntz
     "C140143569" => "S1063941", # Niki
     "C158652896" => "S1063941", # Niki
+    "C154831727" => "S929825",  # Joey
 
     # smash.gg duplicates
     "S419570" => "S1030534",  # Pelupelu
