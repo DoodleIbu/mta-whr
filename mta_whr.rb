@@ -13,6 +13,8 @@ PLAYER_ID_MAP = {
     # Challonge to smash.gg
     "C105677281" => "S1259099", # LukeFlow
     "C105669947" => "S1259790", # NatRop2
+    "C123652763" => "S1259790", # NatRop2
+    "C155153410" => "S1259790", # NatRop2
     "C105656521" => "S1151677", # krispy.jin
     "C105964270" => "S1039897", # Pito
     "C105962886" => "S804769",  # PkKirby
@@ -35,11 +37,14 @@ PLAYER_ID_MAP = {
     "C105635170" => "S1584255", # Breazzy
     "C124103167" => "S840485",  # Marcus
     "C124112756" => "S803914",  # Bad Joe
-    "C123652763" => "S1259790", # NatRop2
     "C123726084" => "S1809282", # Zelgodez
+    "C140165366" => "S1809282", # Zelgodez
+    "C158314692" => "S1809282", # Zelgodez
     "C124115427" => "S1582596", # Gordolo
     "C124071402" => "S1107203", # Igney
     "C124115187" => "S1638615", # Guntz
+    "C140143569" => "S1063941", # Niki
+    "C158652896" => "S1063941", # Niki
 
     # smash.gg duplicates
     "S419570" => "S1030534",  # Pelupelu
@@ -48,8 +53,9 @@ PLAYER_ID_MAP = {
     "S963723" => "S1252257",  # Xeno
     "S1256064" => "S1153395", # Benny Burrito
     "S877308" => "S1245341",  # OmeGa 0oF
-    "S1041169" => "S906275", # michaelcarca6
-    "S1889941" => "S840485", # Marcus
+    "S1041169" => "S906275",  # michaelcarca6
+    "S1889941" => "S840485",  # Marcus
+    "S2604270" => "S1063941", # Niki
 
     # Challonge duplicates
     "C123799326" => "C107683058", # PatoGw
